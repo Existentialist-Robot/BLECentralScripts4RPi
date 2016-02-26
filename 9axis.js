@@ -20,11 +20,17 @@ function noble_on_discover(peripheral)
 		console.log('advertising the following service uuid\'s: ' + peripheral.advertisement.serviceUuids);
 		console.log();
 		peripheral_connect(peripheral);
+		noble.stopScanning();
 	}
 }
 
 function peripheral_connect(peripheral)
 {
+	/* Register disconnect event handler. */
+	peripheral.once('disconnect', function _peripheral_on_disconnect() {
+		console.log('Disconnected: ' + peripheral.uuid);
+		noble.startScanning();
+	});
 	/* Connect */
 	peripheral.connect(function _peripheral_connect(error) {
 		console.log('Connected: ' + peripheral.uuid);

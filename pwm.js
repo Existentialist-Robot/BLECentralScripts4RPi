@@ -20,11 +20,17 @@ function noble_on_discover(peripheral)
 		console.log('advertising the following service uuid\'s: ' + peripheral.advertisement.serviceUuids);
 		console.log();
 		peripheral_connect(peripheral);
+		noble.stopScanning();
 	}
 }
 
 function peripheral_connect(peripheral)
 {
+	/* Register disconnect event handler. */
+	peripheral.once('disconnect', function _peripheral_on_disconnect() {
+		console.log('Disconnected: ' + peripheral.uuid);
+		noble.startScanning();
+	});
 	/* Connect */
 	peripheral.connect(function _peripheral_connect(error) {
 		console.log('Connected: ' + peripheral.uuid);
@@ -49,37 +55,34 @@ function service_discoverCharacteristics(service)
 	service.discoverCharacteristics(null, function _service_discoverCharacteristics(error, characteristics) {
 		console.log('  discoverd characteristics:');
 		for (var i in characteristics) {
+			/* Duty */
 			if (characteristics[i].uuid == '00020103672711e5988ef07959ddcdfb') {
-				console.log('    ' + i + ' uuid: ' + characteristics[i].uuid);
-				characteristic_write(characteristics[i]);
+				var duty = new Buffer(4);
+				duty.writeFloatLE(0.25, 0);
+				characteristics[i].write(duty, false, function(error) {
+					console.log("  Duty write completed: error=" + error);
+
+				});
 			}
+			/* Clock */
 			if (characteristics[i].uuid == '00020102672711e5988ef07959ddcdfb') {
 				var en = new Buffer(4);
 				en.writeUInt32LE(50, 0);
 				characteristics[i].write(en, false, function(error) {
-					console.log('write comp...' + error);	
+					console.log('  Frequency write completed: error=' + error);	
 				});
 			}
+			/* ON/OFF */
 			if (characteristics[i].uuid == '00020101672711e5988ef07959ddcdfb') {
-				var en = new Buffer(1);
-				en.writeUInt8(1, 0);
-				characteristics[i].write(en, false, function(error) {
-					console.log('write comp...' + error);	
+				var onoff = new Buffer(1);
+				onoff.writeUInt8(1, 0);
+				characteristics[i].write(onoff, false, function(error) {
+					console.log('  ON/OFF write completed: error=' + error);	
 				});
 			}
 		}
 	});
-}
 
-function characteristic_write(characteristic)
-{
-	var buf = new Buffer(4);
-	buf.writeFloatLE(0.25, 0);
-
-	characteristic.write(buf, false, function(error) {
-		console.log("Write completed. " + error);
-//		characteristic_read(characteristic);
-	});
 }
 
 function characteristic_read(characteristic)
@@ -95,31 +98,6 @@ function characteristic_read(characteristic)
 
 		console.log('PWM0 Duty: ' + f32a[0]);
 		process.exit();
-	});
-}
-
-function characteristic_notify(characteristic)
-{
-	characteristic.on('read', function _characteristic_read(data, isNotification) {
-		var arr_buf = new ArrayBuffer(36);
-		var u8a  = new Uint8Array(arr_buf);
-		var i16a = new Int16Array(arr_buf);
-		for (var i = 0; i < 36; i++) {
-			u8a[i] = data[i];
-		}
-		console.log('GYRO : x=' + i16a[0] / 16.4 + ' y=' + i16a[1] / 16.4 + ' z=' + i16a[2] / 16.4);
-		console.log('ACCEL: x=' + i16a[3] / 2048 + ' y=' + i16a[4] / 2048 + ' z=' + i16a[5] / 2048);
-		console.log('MAGM : x=' + i16a[6] + ' y=' + i16a[7] + ' z=' + i16a[8]);
-		console.log();
-
-		console.log('GYRO : x=' + i16a[9] / 16.4 + ' y=' + i16a[10] / 16.4 + ' z=' + i16a[11] / 16.4);
-		console.log('ACCEL: x=' + i16a[12] / 2048 + ' y=' + i16a[13] / 2048 + ' z=' + i16a[14] / 2048);
-		console.log('MAGM : x=' + i16a[15] + ' y=' + i16a[16] + ' z=' + i16a[17]);
-		console.log();
-	});
-
-	characteristic.notify(true, function(error) {
-		console.log('notify on');
 	});
 }
 
