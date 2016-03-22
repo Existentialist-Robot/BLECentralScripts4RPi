@@ -64,7 +64,34 @@ function noble_on_discover(peripheral)
 				console.log(url);
 				break;
 			case 0x20: //TLM
+				var arr_buf = new ArrayBuffer(4);
+				var u8arr = new Uint8Array(arr_buf);
+				var u16arr = new Uint16Array(arr_buf);
+				var i16arr = new Int16Array(arr_buf);
+				var u32arr = new Uint32Array(arr_buf);
 				console.log(dt_now_str + 'Detect Eddystone-TLM.');
+				//Battery voltage
+				u8arr[0] = srvData.data[2];
+				u8arr[1] = srvData.data[3];
+				var batt_volt = u16arr[0];
+				//Beacon temperature
+				u8arr[0] = srvData.data[4];
+				u8arr[1] = srvData.data[5];
+				var beacon_temp = i16arr[0];
+				//Advertising PDU count
+				u8arr[0] = srvData.data[6];
+				u8arr[1] = srvData.data[7];
+				u8arr[2] = srvData.data[8];
+				u8arr[3] = srvData.data[9];
+				var adv_cnt = u32arr[0];
+				//Time since power-on
+				u8arr[0] = srvData.data[10];
+				u8arr[1] = srvData.data[11];
+				u8arr[2] = srvData.data[12];
+				u8arr[3] = srvData.data[13];
+				var time_since = u32arr[0];
+				
+				console.log(" Battery voltage:" + batt_volt.toString(10) + ", Beacon temerature:" + beacon_temp.toString(10) + ", Advertising count:" + adv_cnt.toString(10) + ", Time since power-on:" + time_since.toString(10));
 				break;
 			}
 		}
