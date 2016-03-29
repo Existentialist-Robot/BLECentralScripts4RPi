@@ -65,20 +65,23 @@ function service_discoverCharacteristics(service)
 function characteristic_notify(characteristic)
 {
 	characteristic.on('read', function _characteristic_read(data, isNotification) {
+		var dt = new Date();
 		var arr_buf = new ArrayBuffer(36);
 		var u8a  = new Uint8Array(arr_buf);
 		var i16a = new Int16Array(arr_buf);
 		for (var i = 0; i < 36; i++) {
 			u8a[i] = data[i];
 		}
-		console.log('GYRO : x=' + i16a[0] / 16.4 + ' y=' + i16a[1] / 16.4 + ' z=' + i16a[2] / 16.4);
-		console.log('ACCEL: x=' + i16a[3] / 2048 + ' y=' + i16a[4] / 2048 + ' z=' + i16a[5] / 2048);
-		console.log('MAGM : x=' + i16a[6] + ' y=' + i16a[7] + ' z=' + i16a[8]);
+		console.log(dt.toString(10) + ":");
+		console.log(' GYRO : x=' + i16a[0] / 16.4 + ' y=' + i16a[1] / 16.4 + ' z=' + i16a[2] / 16.4);
+		console.log(' ACCEL: x=' + i16a[3] / 2048 + ' y=' + i16a[4] / 2048 + ' z=' + i16a[5] / 2048);
+		console.log(' MAGM : x=' + i16a[6] + ' y=' + i16a[7] + ' z=' + i16a[8]);
 		console.log();
 
-		console.log('GYRO : x=' + i16a[9] / 16.4 + ' y=' + i16a[10] / 16.4 + ' z=' + i16a[11] / 16.4);
-		console.log('ACCEL: x=' + i16a[12] / 2048 + ' y=' + i16a[13] / 2048 + ' z=' + i16a[14] / 2048);
-		console.log('MAGM : x=' + i16a[15] + ' y=' + i16a[16] + ' z=' + i16a[17]);
+		console.log(dt.toString(10) + ":");
+		console.log(' GYRO : x=' + i16a[9] / 16.4 + ' y=' + i16a[10] / 16.4 + ' z=' + i16a[11] / 16.4);
+		console.log(' ACCEL: x=' + i16a[12] / 2048 + ' y=' + i16a[13] / 2048 + ' z=' + i16a[14] / 2048);
+		console.log(' MAGM : x=' + i16a[15] + ' y=' + i16a[16] + ' z=' + i16a[17]);
 		console.log();
 	});
 
