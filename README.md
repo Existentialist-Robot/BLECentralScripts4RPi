@@ -32,7 +32,7 @@ Assumes that Raspbian 8.0 is installed.
 
   ```
   $ cd WORKDIR
-  $ git clone https://github.com/f-okuhara/BLECentralScripts4RPi.git
+  $ git clone https://github.com/cerevo/BLECentralScripts4RPi.git
   ```
 
 4. Install the node.js packages.
