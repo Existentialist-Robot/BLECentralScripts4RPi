@@ -1,3 +1,8 @@
+/*
+ * BLE central sample script
+ * BlueNinja HyouRowGan MotionSensor Service
+ */
+
 var noble = require('noble');
 
 function noble_on_stateChange(state)
@@ -57,7 +62,7 @@ function service_discoverCharacteristics(service)
 		for (var i in characteristics) {
 			console.log('    ' + i + ' uuid: ' + characteristics[i].uuid);
 			characteristic_notify(characteristics[i]);
-			break;			
+			break;
 		}
 	});
 }

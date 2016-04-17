@@ -1,3 +1,8 @@
+/*
+ * BLE central sample script
+ * BlueNinja HyouRowGan PWM Service
+ */
+
 var noble = require('noble');
 
 function noble_on_stateChange(state)
@@ -69,7 +74,7 @@ function service_discoverCharacteristics(service)
 				var en = new Buffer(4);
 				en.writeUInt32LE(50, 0);
 				characteristics[i].write(en, false, function(error) {
-					console.log('  Frequency write completed: error=' + error);	
+					console.log('  Frequency write completed: error=' + error);
 				});
 			}
 			/* ON/OFF */
@@ -77,7 +82,7 @@ function service_discoverCharacteristics(service)
 				var onoff = new Buffer(1);
 				onoff.writeUInt8(1, 0);
 				characteristics[i].write(onoff, false, function(error) {
-					console.log('  ON/OFF write completed: error=' + error);	
+					console.log('  ON/OFF write completed: error=' + error);
 				});
 			}
 		}

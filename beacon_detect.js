@@ -1,3 +1,8 @@
+/*
+ * BLE central sample script
+ * Eddystone detection.
+ */
+
 var noble = require('noble');
 require('date-utils');
 
